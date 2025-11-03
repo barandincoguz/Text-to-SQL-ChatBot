@@ -23,6 +23,10 @@ import logging
 from collections import defaultdict, deque
 import pandas as pd
 import re  # used by admin SQL executor
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 # ============================================================================
@@ -47,7 +51,7 @@ logger = logging.getLogger(__name__)
 class Config:
     """Centralized configuration management"""
     # API Configuration
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # ⚠️ MUST be set as environment variable
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Loaded from .env file
     MODEL_NAME = "gemini-2.5-flash"  # Use latest model
     
     # Database Configuration
