@@ -206,7 +206,114 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-/project1.py
-/northwind.db
-/security_logs
+# ============================================================================
+# PROJECT SPECIFIC IGNORES
+# ============================================================================
+
+# Environment variables (CRITICAL - contains API keys!)
+.env
+.env.local
+.env.*.local
+
+# API Keys and Secrets (Never commit these!)
+**/secrets.json
+**/*_secrets.py
+api_keys.txt
+*.key
+*.pem
+
+# Database files (may contain sensitive data)
+*.db
+*.sqlite
+*.sqlite3
+northwind.db
+
+# Log files (may contain sensitive information)
+*.log
+logs/
+security_logs/
+sql_chatbot.log
+
+# Gradio cache and temporary files
+.gradio/
+gradio_cached_examples/
+
+# macOS system files
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows system files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Temporary Python files (additional)
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Test coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Virtual environments (additional)
+venv/
+ENV/
+env.bak/
+venv.bak/
+.Python
+
+# Project-specific Python files (if needed)
+# Uncomment if you want to ignore specific files:
+# /project1.py
+# /Project.py
+
+# Package build artifacts
+dist/
+build/
+*.egg-info/

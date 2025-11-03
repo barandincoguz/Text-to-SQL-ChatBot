@@ -5,11 +5,108 @@
 Tarih: 3 Kasım 2025
 Google Gemini API anahtarı yanlışlıkla Git repository'sine commit edildi ve GitHub'a push edildi.
 
-## Açığa Çıkan Anahtar
+# 🚨 SECURITY ALERT - API Key Leak Incident
+
+## Status
+
+**Date:** November 3, 2025  
+**Incident:** Google Gemini API key was accidentally committed to Git repository and pushed to GitHub.
+
+## Exposed Key
 
 ```
 AIzaSyAyfYVvpC6LmEsUYPITFbhJrytsWEC3G9Q
 ```
+
+## ✅ Actions Taken
+
+### 1. Code Cleanup
+
+- [x] Removed API key from `hw4.py`
+- [x] Removed API key from `project1.py`
+- [x] Both files now use `os.getenv("GEMINI_API_KEY")`
+- [x] Created `.env.example` template file
+
+### 2. Git Operations
+
+- [x] Changes committed
+- [x] Pushed to GitHub
+
+### 3. API Key Management
+
+⚠️ **REQUIRED ACTIONS:**
+
+1. **IMMEDIATELY**: Go to Google AI Studio and delete the old key
+
+   - URL: https://aistudio.google.com/app/apikey
+   - Find the exposed key and click DELETE
+
+2. **NEW API KEY**: Create a new key
+
+   - Click "Create API Key" on the same page
+   - Save the new key securely (e.g., password manager)
+
+3. **ENVIRONMENT VARIABLE**: Set up the new key
+
+   ```bash
+   # macOS/Linux (add to .zshrc or .bash_profile)
+   export GEMINI_API_KEY="your_new_api_key_here"
+
+   # Or create .env file
+   echo "GEMINI_API_KEY=your_new_api_key_here" > .env
+   ```
+
+4. **VERIFY**: Test the application
+   ```bash
+   python hw4.py
+   # or
+   python project1.py
+   ```
+
+## 🔒 Git History Cleanup (Optional but Recommended)
+
+To completely remove the API key from all commits:
+
+```bash
+# Install git-filter-repo (recommended method)
+brew install git-filter-repo
+
+# Remove API key from all commits
+git filter-repo --replace-text <(echo "AIzaSyAyfYVvpC6LmEsUYPITFbhJrytsWEC3G9Q==>***REMOVED***")
+
+# Force push (WARNING: Dangerous operation!)
+git push origin --force --all
+```
+
+**WARNING**: Force push affects all collaborators. Safe for solo projects only.
+
+## 📚 Prevention Measures for Future
+
+1. **Never Hardcode**: Don't put API keys directly in code
+2. **Use Environment Variables**: Always use `.env` files or system env vars
+3. **Add Git Hooks**: Implement pre-commit hooks to check for API keys
+4. **Enable Secret Scanning**: Activate GitHub's secret scanning feature
+5. **Update `.gitignore`**: Exclude `.env`, `secrets/`, `*.key` files
+
+## 🔍 Security Checklist
+
+- [x] API key removed from code files
+- [x] `.env.example` created as template
+- [ ] Old API key deleted from Google AI Studio
+- [ ] New API key generated
+- [ ] New key added to `.env` file
+- [x] `.env` file added to `.gitignore`
+- [x] Changes committed to Git
+- [x] Pushed to GitHub
+- [ ] Application tested and working
+
+## 📞 Contact
+
+For questions, contact the project owner.
+
+---
+
+**Last Updated:** November 3, 2025
 
 ## ✅ Alınan Önlemler
 

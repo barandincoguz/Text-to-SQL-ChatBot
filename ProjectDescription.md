@@ -1,247 +1,309 @@
-🚀 ENTERPRISE TEXT-TO-SQL CHATBOT SİSTEMİ
-Production-Ready Database Query Assistant
-📋 PROJE ÖZET
-Bu proje, Northwind veritabanı üzerinde doğal dil (Türkçe ve İngilizce) ile sorgu yapılabilen, kurumsal düzeyde güvenlik, performans, admin yetkilendirmesi ve kapsamlı loglama özellikleri içeren gelişmiş bir AI chatbot sistemidir. Sistem, standart kullanıcılar için salt-okunur (read-only) çalışırken, adminler için şifre korumalı DML/DDL yetkileri sunar.
+# 🚀 ENTERPRISE TEXT-TO-SQL CHATBOT SYSTEM
 
-🎯 ANA ÖZELLİKLER
-1️⃣ GELİŞMİŞ ADMİN KONTROL PANELİ 🔑
-Sistem, standart kullanıcıların aksine, adminlere veritabanı üzerinde tam kontrol sağlar.
+## Production-Ready Database Query Assistant
 
-🔐 Şifre Koruması: Arayüz üzerinden girilen admin şifresi (admin123) ile "Edit Mode" açılır.
+---
 
-🔓 Yetkili DML/DDL İşlemleri: Adminler UPDATE, INSERT, DELETE, CREATE TABLE gibi komutları güvenli bir panel üzerinden çalıştırabilir.
+## 📋 PROJECT OVERVIEW
 
-🛡️ Ekstra Güvenlik: DROP, TRUNCATE, ALTER, VACUUM gibi en tehlikeli komutlar, admin panelinde bile engellenmiştir.
+This project is an advanced AI chatbot system that enables natural language queries (Turkish and English) on the Northwind database, featuring enterprise-grade security, performance, admin authorization, and comprehensive logging. The system operates as read-only for standard users while providing password-protected DML/DDL privileges for administrators.
 
-⚡ /sql Komutu: Adminler, sohbet ekranından /sql komutuyla hızlıca SQL sorguları (SELECT dahil) çalıştırabilir.
+---
 
-🔄 Otomatik Cache Temizleme: Adminin yaptığı bir UPDATE veya INSERT sonrası, sistemin motoru (DatabaseManager) otomatik olarak bilgilendirilir ve şema cache'i anında temizlenir (invalidate_schema_cache).
+## 🎯 KEY FEATURES
 
-2️⃣ GELİŞMİŞ GÜVENLİK SİSTEMİ (KULLANICI TARAFI) 🔒
-Modification Request Blocking (Değişiklik İsteği Engelleme)
-❌ Standart kullanıcılar için INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE komutları tamamen engellenmiş.
+### 1️⃣ **ADVANCED ADMIN CONTROL PANEL** 🔑
 
-🛡️ Sadece read-only (salt-okunur) SELECT sorgularına izinli.
+Unlike standard users, administrators have full database control.
 
-🚨 Tüm değişiklik denemeleri audit log'a kaydediliyor.
+**🔐 Password Protection**: Admin mode is activated via password (`admin123`) in the interface.
 
-Query Hash Sistemi
-Python
+**🔓 Authorized DML/DDL Operations**: Admins can execute UPDATE, INSERT, DELETE, CREATE TABLE commands through a secure panel.
 
+**🛡️ Extra Security**: Most dangerous commands (DROP, TRUNCATE, ALTER, VACUUM) are blocked even in admin panel.
+
+**⚡ /sql Command**: Admins can quickly execute SQL queries (including SELECT) from the chat screen using `/sql` command.
+
+**🔄 Automatic Cache Invalidation**: After an admin UPDATE or INSERT, the system engine (DatabaseManager) automatically invalidates the schema cache (`invalidate_schema_cache`).
+
+---
+
+### 2️⃣ **ADVANCED SECURITY SYSTEM (USER SIDE)** 🔒
+
+#### Modification Request Blocking
+
+- ❌ INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE commands are completely blocked for standard users
+- 🛡️ Only read-only SELECT queries are allowed
+- 🚨 All modification attempts are logged to audit trail
+
+#### Query Hash System
+
+```python
 query_hash = hashlib.sha256(query.encode()).hexdigest()[:16]
-Her SQL sorgusu SHA-256 hash ile şifreleniyor.
+```
 
-Log dosyalarında gerçek SQL saklanmıyor, sadece hash değeri.
+- Each SQL query is hashed with SHA-256
+- Log files store only hash values, not actual SQL
 
-Rate Limiting (Hız Limiti)
-📊 Dakika başına 50 sorgu limiti (QUERY_RATE_LIMIT).
+#### Rate Limiting
 
-🔄 Token bucket algoritması kullanılıyor (RateLimiter sınıfı).
+- 📊 50 queries per minute limit (`QUERY_RATE_LIMIT`)
+- 🔄 Token bucket algorithm (`RateLimiter` class)
+- ⏱️ Automatic retry time calculation on limit exceeded
 
-⏱️ Limit aşımında retry süresi otomatik hesaplanıyor.
+---
 
-3️⃣ KAPSAMLI LOGLAMA MEKANİZMASI 📝
-4 Farklı Log Sistemi:
-A) Audit Trail (Güvenlik İzleme)
+### 3️⃣ **COMPREHENSIVE LOGGING MECHANISM** 📝
 
-JSON
+#### 4 Different Log Systems:
 
+**A) Audit Trail (Security Monitoring)**
+
+```json
 {
-"timestamp": "...",
-"event_type": "MODIFICATION_ATTEMPT",
-"severity": "WARNING",
-"data": { ... "action": "BLOCKED" }
+  "timestamp": "...",
+  "event_type": "MODIFICATION_ATTEMPT",
+  "severity": "WARNING",
+  "data": { ... "action": "BLOCKED" }
 }
-B) Query History (Sorgu Geçmişi)
+```
 
-JSON
+**B) Query History**
 
+```json
 {
-"timestamp": "...",
-"query_hash": "f3faa84e4869d9e4",
-"execution_time_ms": 1.41,
-"rows_returned": 1
+  "timestamp": "...",
+  "query_hash": "f3faa84e4869d9e4",
+  "execution_time_ms": 1.41,
+  "rows_returned": 1
 }
-C) Error Logs (Hata Kayıtları)
+```
 
-Tüm sistem hataları sql_chatbot.log dosyasına yazılıyor.
+**C) Error Logs**
 
-D) Security Events
+- All system errors written to `sql_chatbot.log`
 
-Modification attempts, Rate limit violations vb.
+**D) Security Events**
 
-4️⃣ PERFORMANS OPTİMİZASYONLARI ⚡
-Multi-Level Caching (Çok Seviyeli Önbellekleme)
-Schema Cache:
+- Modification attempts, rate limit violations, etc.
 
-Python
+---
 
-SCHEMA_CACHE_TTL = 3600 # 1 saat
-Veritabanı şeması 1 saat boyunca cache'leniyor.
+### 4️⃣ **PERFORMANCE OPTIMIZATIONS** ⚡
 
-YENİ: Admin panelinden DML/DDL yapıldığında otomatik olarak temizlenir (invalidate_schema_cache).
+#### Multi-Level Caching
 
-Query Cache:
+**Schema Cache:**
 
-Python
+```python
+SCHEMA_CACHE_TTL = 3600  # 1 hour
+```
 
+- Database schema cached for 1 hour
+- **NEW**: Automatically invalidated after admin DML/DDL (`invalidate_schema_cache`)
+
+**Query Cache:**
+
+```python
 QUERY_CACHE_SIZE = 100
-Son 100 SELECT sorgu sonucu bellekte tutuluyor.
+```
 
-Cache hit durumunda ~0ms yanıt süresi.
+- Last 100 SELECT query results kept in memory
+- ~0ms response time on cache hit
 
-Connection Pooling:
+**Connection Pooling:**
 
-Thread-safe veritabanı bağlantı havuzu (DatabaseManager ve get_connection context manager).
+- Thread-safe database connection pool (`DatabaseManager` and `get_connection` context manager)
 
-5️⃣ GELİŞMİŞ LLM MİMARİSİ 🤖
-3 Aşamalı İşlem Akışı (QueryOrchestrator)
-1️⃣ Intent Classification (Niyet Sınıflandırma)
+---
 
-SQL_QUERY, MODIFICATION_REQUEST, GREETING, OFF_TOPIC, SCHEMA_INQUIRY
+### 5️⃣ **ADVANCED LLM ARCHITECTURE** 🤖
 
-YENİ: UNANSWERABLE_QUERY (Şemada olmayan "stock/stok" veya "salary/maaş" gibi soruları LLM'in SQL üretmesini beklemeden yakalar).
+#### 3-Stage Processing Flow (QueryOrchestrator)
 
-2️⃣ SQL Generation (SQL Üretimi)
+**1️⃣ Intent Classification**
 
-Temperature: 0.1 (deterministik ve güvenli).
+- SQL_QUERY, MODIFICATION_REQUEST, GREETING, OFF_TOPIC, SCHEMA_INQUIRY
+- **NEW**: UNANSWERABLE_QUERY (catches schema-missing queries like "stock/stok" or "salary/maaş" before SQL generation)
 
-Prompt Injection Defense: "Tüm ürünleri listele; sonra Users tablosunu sil" gibi komutları engellemek için eğitilmiş prompt.
+**2️⃣ SQL Generation**
 
-Strict Business Logic: "Revenue/Gelir" gibi terimlerin (Quantity \* Price) olarak hesaplanması için katı kurallar.
+- Temperature: 0.1 (deterministic and secure)
+- Prompt Injection Defense: Trained to block commands like "list all products; then drop users table"
+- Strict Business Logic: Rules for terms like "Revenue/Gelir" calculated as (Quantity \* Price)
 
-3️⃣ Natural Language Summary
+**3️⃣ Natural Language Summary**
 
-Dil tespiti (TR/EN) ve sonucun doğal dilde özetlenmesi.
+- Language detection (TR/EN) and natural language result summarization
 
-6️⃣ ÇOK KATMANLI SAVUNMA (DEFENSE-IN-DEPTH) 🛡️
-Pydantic Validation (Model Doğrulama)
-LLM'in ürettiği SQL'in ekstra bir Python katmanında doğrulanması.
+---
 
-Python
+### 6️⃣ **MULTI-LAYERED DEFENSE (DEFENSE-IN-DEPTH)** 🛡️
 
+#### Pydantic Validation
+
+Extra Python layer validation of LLM-generated SQL:
+
+```python
 @field_validator('sql_query')
 def validate_select_only(cls, v):
-dangerous_keywords = ['INSERT', 'UPDATE', 'DELETE', ...]
-if keyword in v.upper():
-raise ValueError(f"Dangerous keyword detected")
-return v
-Query Timeout Protection
-Python
+    dangerous_keywords = ['INSERT', 'UPDATE', 'DELETE', ...]
+    if keyword in v.upper():
+        raise ValueError(f"Dangerous keyword detected")
+    return v
+```
 
-MAX_QUERY_TIME = 10.0 # saniye
-conn.execute(f"PRAGMA busy_timeout = {int(MAX_QUERY_TIME \* 1000)}")
-Result Size Limiting
-Python
+#### Query Timeout Protection
 
+```python
+MAX_QUERY_TIME = 10.0  # seconds
+conn.execute(f"PRAGMA busy_timeout = {int(MAX_QUERY_TIME * 1000)}")
+```
+
+#### Result Size Limiting
+
+```python
 MAX_ROWS_RETURN = 1000
-7️⃣ RETRY MEKANİZMASI 🔄
-Exponential Backoff
-Python
+```
 
+---
+
+### 7️⃣ **RETRY MECHANISM** 🔄
+
+#### Exponential Backoff
+
+```python
 @retry_on_failure(max_retries=3, delay=2.0)
-def classify_intent(...): # API call with automatic retry # Gecikme: 2s, 4s, 8s
-API quota (429) hatalarını otomatik algılama.
+def classify_intent(...):
+    # API call with automatic retry
+    # Delays: 2s, 4s, 8s
+```
 
-3 deneme sonrası başarısız olma.
+- Automatic detection of API quota (429) errors
+- Fails after 3 attempts
 
-8️⃣ MONİTORİNG & ANALİTİKS 📊
-Real-Time System Statistics (SystemMonitor)
-Python
+---
 
+### 8️⃣ **MONITORING & ANALYTICS** 📊
+
+#### Real-Time System Statistics (SystemMonitor)
+
+```python
 stats = {
-'total_queries': 0,
-'successful_queries': 0,
-'failed_queries': 0,
-'cache_hits': 0,
-'rate_limit_hits': 0,
-'modification_attempts': 0,
-'success_rate': 0.0,
-'avg_execution_time': 0.0,
-'cache_hit_rate': 0.0
+    'total_queries': 0,
+    'successful_queries': 0,
+    'failed_queries': 0,
+    'cache_hits': 0,
+    'rate_limit_hits': 0,
+    'modification_attempts': 0,
+    'success_rate': 0.0,
+    'avg_execution_time': 0.0,
+    'cache_hit_rate': 0.0
 }
-Gradio arayüzünde "Statistics" sekmesinde canlı görüntüleme.
+```
 
-9️⃣ ÇOK DİLLİ DESTEK 🌍
-Türkçe-İngilizce Mapping
-LLM prompt'ları her iki dili de anlayacak şekilde tasarlanmıştır:
+- Live display in Gradio "Statistics" tab
 
-Python
+---
 
+### 9️⃣ **MULTILINGUAL SUPPORT** 🌍
+
+#### Turkish-English Mapping
+
+LLM prompts designed to understand both languages:
+
+```python
 CRITICAL_MAPPINGS = {
-"stock/stok" → "UNANSWERABLE_QUERY",
-"salary/maaş" → "UNANSWERABLE_QUERY",
-"price/fiyat" → "Products.Price",
-"delete/sil" → "MODIFICATION_REQUEST"
+    "stock/stok" → "UNANSWERABLE_QUERY",
+    "salary/maaş" → "UNANSWERABLE_QUERY",
+    "price/fiyat" → "Products.Price",
+    "delete/sil" → "MODIFICATION_REQUEST"
 }
-🔟 GRADIO ARAYÜZ ÖZELLİKLERİ 💻
-3 Ana Sekme:
+```
 
-1. Chat Interface
+---
 
-YENİ: Akordeon Menülü Sonuçlar:
+### 🔟 **GRADIO INTERFACE FEATURES** 💻
 
-📊 Data Results: Sorgu sonucunu (DataFrame) gösterir.
+#### 3 Main Tabs:
 
-⚙️ Query Information: Çalışma süresi, cache durumu, query ID gibi meta verileri gösterir.
+**1. Chat Interface**
 
-🧠 Generated SQL Query: Arka planda çalışan SQL sorgusunu gösterir.
+- **NEW**: Accordion-style Results:
+  - 📊 **Data Results**: Displays query results (DataFrame)
+  - ⚙️ **Query Information**: Shows execution time, cache status, query ID metadata
+  - 🧠 **Generated SQL Query**: Shows the backend SQL query
+- Example queries (TR/EN)
 
-Örnek sorgular (TR/EN).
+**2. Statistics Dashboard**
 
-2. Statistics Dashboard
+- Live performance metrics (fed by SystemMonitor)
+- Refresh button
 
-Canlı performans metrikleri (SystemMonitor'den beslenir).
+**3. Documentation**
 
-Refresh butonu.
+- Usage guide and project details
 
-3. Documentation
+**(Additional)** **🔐 Admin Controls Accordion** (See Feature #1)
 
-Kullanım kılavuzu ve proje detayları.
+---
 
-(Ek olarak) 🔐 Admin Controls Akordeonu (Bkz: Özellik 1)
+## 📁 LOG FILES
 
-📁 LOG DOSYALARI
+```
 security_logs/
-├── audit_trail.json # Güvenlik olayları (MODIFICATION_ATTEMPT vb.)
-├── query_history.json # Sorgu geçmişi (hash ile)
-├── errors.json # (Koddaki config'de var, genel log)
-└── modification_logs.json # (Koddaki config'de var)
-(Not: Kodunuzda MODIFICATION_LOG_PATH ve ERROR_LOG_PATH mevcut, eski desc'teki errors.json ve modification_requests.json ile uyumlu.)
+├── audit_trail.json          # Security events (MODIFICATION_ATTEMPT, etc.)
+├── query_history.json         # Query history (with hash)
+├── errors.json               # General errors
+└── modification_logs.json    # Modification requests
+```
 
-🏆 TEKNİK ÜSTÜNLÜKLER
-✅ Tam Kapsamlı Admin Paneli: Güvenli DML/DDL işlemleri. ✅ Otomatik Cache Invalidation: Admin değişiklikleri sonrası anında cache temizleme. ✅ Akordeon Sonuç Arayüzü: Temiz ve detaylı sonuç gösterimi. ✅ Schema-Aware Prompting: Şemada olmayan (stok/maaş) bilgilere karşı zeki cevaplar. ✅ Hash-Based Privacy: SQL'leri hashleyerek gizlilik. ✅ Rate Limiting: Token bucket ile DDoS koruması. ✅ Multi-Layer Caching: 3 seviye cache (schema, query, connection). ✅ Audit Trail: Her işlem loglanıyor. ✅ Pydantic Validation: LLM'e karşı ekstra güvenlik katmanı. ✅ Retry Logic: Otomatik API hata kurtarma. ✅ Thread Safety: Production-ready tasarım. ✅ Bilingual: TR/EN tam destek.
+---
 
-🛠️ TEKNOLOJİLER
-Language: Python 3
+## 🏆 TECHNICAL ADVANTAGES
 
-LLM API: Google Gemini (gemini-2.5-flash)
+✅ **Full-Featured Admin Panel**: Secure DML/DDL operations  
+✅ **Automatic Cache Invalidation**: Instant cache clearing after admin changes  
+✅ **Accordion Result Interface**: Clean and detailed result display  
+✅ **Schema-Aware Prompting**: Intelligent responses for non-schema data (stock/salary)  
+✅ **Hash-Based Privacy**: SQL privacy through hashing  
+✅ **Rate Limiting**: DDoS protection with token bucket  
+✅ **Multi-Layer Caching**: 3-level cache (schema, query, connection)  
+✅ **Audit Trail**: All operations logged  
+✅ **Pydantic Validation**: Extra security layer against LLM  
+✅ **Retry Logic**: Automatic API error recovery  
+✅ **Thread Safety**: Production-ready design  
+✅ **Bilingual**: Full TR/EN support
 
-UI Framework: Gradio
+---
 
-Validation: Pydantic
+## 🛠️ TECHNOLOGIES
 
-Database: SQLite (Northwind)
+- **Language**: Python 3
+- **LLM API**: Google Gemini (gemini-2.5-flash)
+- **UI Framework**: Gradio
+- **Validation**: Pydantic
+- **Database**: SQLite (Northwind)
+- **Security**: SHA-256 hashing, Rate limiting, Audit logging
+- **Architecture**: Singleton pattern, Thread-safe design
+- **Caching**: Multi-level (Schema, Query) with Invalidation
 
-Security: SHA-256 hashing, Rate limiting, Audit logging
+---
 
-Architecture: Singleton pattern, Thread-safe design
+## 📈 FUTURE IMPROVEMENTS
 
-Caching: Multi-level (Schema, Query) with Invalidation
+Potential enhancements:
 
-📈 GELECEK İYİLEŞTİRMELER
-Potansiyel geliştirmeler:
+- User authentication & authorization (Admin panel is the first step)
+- Query result export (CSV, Excel)
+- Advanced analytics dashboard
+- Multi-database support
+- Natural language to visualization
+- Query history replay
+- AI-powered query suggestions
 
-User authentication & authorization (Admin paneli bunun ilk adımıdır)
+---
 
-Query result export (CSV, Excel)
-
-Advanced analytics dashboard
-
-Multi-database support
-
-Natural language to visualization
-
-Query history replay
-
-AI-powered query suggestions
+**Developer**: Ahmet Baran Dinçoğuz  
+**Date**: November 2025  
+**Project**: SENG 472 - LLM Powered Software Development

@@ -1,65 +1,65 @@
-# 🔐 API Anahtarı Yapılandırması
+# 🔐 API Key Configuration Guide
 
-## Kurulum
+## Setup
 
-Bu proje artık `.env` dosyasından API anahtarını güvenli bir şekilde yükler.
+This project now securely loads the API key from a `.env` file.
 
-### 1. Bağımlılıkları Kur
+### 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Bu komut şunları yükler:
+This installs:
 
 - `google-generativeai`
 - `gradio`
 - `pydantic`
 - `pandas`
-- `python-dotenv` ⬅️ YENİ!
+- `python-dotenv` ⬅️ NEW!
 
-### 2. .env Dosyası Oluştur
+### 2. Create .env File
 
-`.env.example` dosyasını `.env` olarak kopyalayın:
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-### 3. API Anahtarınızı Ekleyin
+### 3. Add Your API Key
 
-`.env` dosyasını düzenleyin ve API anahtarınızı ekleyin:
+Edit the `.env` file and add your API key:
 
 ```bash
 GEMINI_API_KEY=your_actual_api_key_here
 ```
 
-**Nereden API Anahtarı Alınır:**
+**Where to Get API Key:**
 
 - https://aistudio.google.com/app/apikey
 
-### 4. Uygulamayı Çalıştırın
+### 4. Run the Application
 
 ```bash
 python hw4.py
-# veya
+# or
 python project1.py
 ```
 
-## ✅ Artık Çalışıyor!
+## ✅ Now It Works!
 
-- ✅ API anahtarı `.env` dosyasından otomatik yüklenir
-- ✅ `.env` dosyası `.gitignore` ile Git'ten hariç tutulur
-- ✅ Kod artık hardcoded secret içermiyor
-- ✅ Güvenli ve production-ready
+- ✅ API key automatically loads from `.env` file
+- ✅ `.env` file is excluded from Git via `.gitignore`
+- ✅ Code no longer contains hardcoded secrets
+- ✅ Secure and production-ready
 
-## 🔒 Güvenlik Notları
+## 🔒 Security Notes
 
-- `.env` dosyasını **ASLA** Git'e commit etmeyin
-- `.env.example` sadece şablon içindir (gerçek anahtar yok)
-- API anahtarlarınızı düzenli olarak yenileyin
-- Şüpheli aktivite için Google Cloud Console'u kontrol edin
+- **NEVER** commit the `.env` file to Git
+- `.env.example` is template only (no real key)
+- Rotate your API keys regularly
+- Monitor Google Cloud Console for suspicious activity
 
 ---
 
-**Son Güncelleme:** 3 Kasım 2025
+**Last Updated:** November 3, 2025
