@@ -128,7 +128,7 @@ GEMINI_API_KEY=your_api_key_here
 ### 5. Run the Application
 
 ```bash
-python hw4.py
+python text-to-sql-chatbot.py
 ```
 
 The Gradio interface will launch at `http://127.0.0.1:7860`
@@ -154,7 +154,7 @@ The Gradio interface will launch at `http://127.0.0.1:7860`
 
 ```
 .
-├── hw4.py                    # Main application file
+├── text-to-sql-chatbot.py    # Main application file
 ├── project1.py               # Alternative version
 ├── requirements.txt          # Python dependencies
 ├── .env                      # API keys (gitignored)
